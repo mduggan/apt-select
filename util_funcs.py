@@ -7,6 +7,12 @@ try:
 except ImportError:
     from urllib2 import urlopen, HTTPError, URLError
 
+try:
+    from ssl import SSLError
+except ImportError:
+    class SSLError():
+        pass
+
 def errorExit(err, status):
     print(err, file=stderr)
     exit(status)
@@ -14,6 +20,9 @@ def errorExit(err, status):
 def getHTML(url):
     try:
         html = urlopen(url)
+    except SSLError as err:
+        print("\n" + err)
+        return
     except HTTPError as err:
         print("\n" + err)
         return
